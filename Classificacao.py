@@ -48,3 +48,12 @@ upper_abs_correlacao[upper_abs_correlacao>0.95]
 # %%
 X_removed = X.drop(['mean radius','mean area', 'radius error'],axis = 1)
 # %%
+# Separação dos dados em treinamento e teste
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, stratify = y, random_state = 42)
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+X_removed_train, X_removed_test, y_train, y_test = train_test_split(X_removed, y, test_size = 0.2, stratify = y, random_state = 42)
+# %%
