@@ -68,3 +68,38 @@ scaling_removed_standard.fit(X_removed_train)
 X_removed_train_scaled_standard = scaling_removed_standard.transform(X_removed_train)
 X_removed_test_scaled_standard = scaling_removed_standard.transform(X_removed_test)
 # %%
+# Algoritmos de aprendizado
+# SVM
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import classification_report
+from sklearn.model_selection import GridSearchCV
+
+# %%
+clf_svm = SVC()
+clf_svm.fit(X_train_scaled_standard,y_train)
+y_pred = clf_svm.predict(X_test_scaled_standard)
+print(classification_report(y_test,y_pred))
+# %%
+param_grid = {'C': [0.1, 1, 10, 100], 
+              'gamma': [0.1, 0.01, 0.001],
+              'kernel': ['rbf']}
+# %%
+grid = GridSearchCV(SVC(), param_grid, cv = 4)
+grid.fit(X_train_scaled_standard, y_train)
+print(grid.best_params_)
+# %%
+clf_svm = SVC(C = 10, gamma = 0.001, kernel = 'rbf')
+clf_svm.fit(X_train_scaled_standard, y_train)
+y_pred = clf_svm.predict(X_test_scaled_standard)
+print(classification_report(y_test,y_pred))
+# %%
+# Confusion matrix 
+from sklearn.metrics import confusion_matrix, plot_confusion_matrix
+cm = confusion_matrix(y_test, y_pred)
+ax= plt.subplot()
+ax.set_title('Confusion Matrix');
+sns.heatmap(cm, annot=True, fmt='g',ax = ax);
+ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels'); 
+plt.show()
+# %%
