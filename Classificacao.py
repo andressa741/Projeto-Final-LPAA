@@ -57,3 +57,14 @@ print(y_train.shape)
 print(y_test.shape)
 X_removed_train, X_removed_test, y_train, y_test = train_test_split(X_removed, y, test_size = 0.2, stratify = y, random_state = 42)
 # %%
+# Feature Scaling
+from sklearn.preprocessing import StandardScaler
+scaling_standard = StandardScaler()
+scaling_standard.fit(X_train)
+X_train_scaled_standard = scaling_standard.transform(X_train)
+X_test_scaled_standard = scaling_standard.transform(X_test)
+scaling_removed_standard = StandardScaler()
+scaling_removed_standard.fit(X_removed_train)
+X_removed_train_scaled_standard = scaling_removed_standard.transform(X_removed_train)
+X_removed_test_scaled_standard = scaling_removed_standard.transform(X_removed_test)
+# %%
