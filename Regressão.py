@@ -66,6 +66,8 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler
 numeric_columns=list(X.select_dtypes('float64').columns)
 categorical_columns=list(X.select_dtypes('int64').columns)
+X_train = pd.get_dummies(X_train,columns = categorical_columns)
+X_test = pd.get_dummies(X_test,columns = categorical_columns)
 pipeline=ColumnTransformer([
     ('standard_scaler',StandardScaler(),numeric_columns),
 ])
