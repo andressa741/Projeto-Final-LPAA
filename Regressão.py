@@ -3,6 +3,7 @@
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
+from pyparsing import col
 import seaborn as sns
 # %%
 # Import do dataset
@@ -58,4 +59,17 @@ print("Shape: y_train")
 print(y_train.shape)
 print("Shape: y_test")
 print(y_test.shape)
+# %%
+# Feature Scaling
+
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler
+numeric_columns=list(X.select_dtypes('float64').columns)
+categorical_columns=list(X.select_dtypes('int64').columns)
+pipeline=ColumnTransformer([
+    ('standard_scaler',StandardScaler(),numeric_columns),
+])
+pipeline.fit(X_train)
+X_train_scaled = pd.concat([pd.DataFrame(pipeline.transform(X_train),index = X_train.index,columns=["age", "bmi","bp","s1","s2","s3","s4","s5","s6"]),X_train[["sex_1","sex_2"]]],axis = 1)
+X_test_scaled = pd.concat([pd.DataFrame(pipeline.transform(X_test),index = X_test.index,columns=["age", "bmi","bp","s1","s2","s3","s4","s5","s6"]),X_test[["sex_1","sex_2"]]],axis = 1)
 # %%
