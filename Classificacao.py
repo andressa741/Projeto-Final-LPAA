@@ -82,11 +82,16 @@ clf_svm.fit(X_train_scaled_standard,y_train)
 y_pred = clf_svm.predict(X_test_scaled_standard)
 print(classification_report(y_test,y_pred))
 # %%
+from sklearn.model_selection import StratifiedKFold
 param_grid = {'C': [0.1, 1, 10, 100], 
               'gamma': [0.1, 0.01, 0.001],
               'kernel': ['rbf']}
 # %%
-grid = GridSearchCV(SVC(), param_grid, cv = 4)
+grid = GridSearchCV(SVC(), param_grid, cv = StratifiedKFold(
+        n_splits=4,
+        shuffle=True,
+        random_state=42
+    ))
 grid.fit(X_train_scaled_standard, y_train)
 print(grid.best_params_)
 # %%
@@ -212,3 +217,4 @@ sns.heatmap(cm, cmap = "Greens", annot=True,
 plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: KNN Best Params") 
 plt.show()
 # %%
+
