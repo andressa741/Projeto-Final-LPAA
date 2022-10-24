@@ -217,10 +217,10 @@ sns.heatmap(cm, cmap = "Greens", annot=True,
 plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: KNN Best Params") 
 plt.show()
 # %%
-from joblib import dump
-dump(clf_svm,"svm.pkl")
-dump(rfc_random,"rfc.pkl")
-dump(knn_grid,"knn.pkl")
+from pickle import dump
+dump(clf_svm,open("svm.pkl", 'wb'))
+dump(rfc_random,open("rfc.pkl", 'wb'))
+dump(knn_grid,open("knn.pkl", 'wb'))
 
 
 
