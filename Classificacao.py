@@ -97,9 +97,10 @@ print(classification_report(y_test,y_pred))
 # Confusion matrix 
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
-ax= plt.subplot()
-ax.set_title('Confusion Matrix');
-sns.heatmap(cm, annot=True, fmt='g',ax = ax);
-ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels'); 
+plt.figure()
+sns.heatmap(cm, cmap = "Greens", annot=True, 
+            cbar_kws = {"orientation":"vertical","label":"color bar"},
+            xticklabels = [0,1], yticklabels = [0,1]);
+plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: SVM") 
 plt.show()
 # %%
