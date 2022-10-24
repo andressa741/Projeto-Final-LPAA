@@ -120,3 +120,53 @@ dfscores = pd.Series(best_features.scores_,index=X.columns)
 dfscores.sort_values(inplace=True)
 dfscores.plot(kind='barh')
 # %%
+# Random Forest
+rfc = RandomForestClassifier(n_estimators=50,random_state=42)
+rfc.fit(X_train,y_train)
+y_pred_base_model = rfc.predict(X_test)
+print(classification_report(y_test,y_pred_base_model))
+print(rfc.get_params())
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred_base_model)
+plt.figure()
+sns.heatmap(cm, cmap = "Greens", annot=True, 
+            cbar_kws = {"orientation":"vertical","label":"color bar"},
+            xticklabels = [0,1], yticklabels = [0,1]);
+plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: Random Forest") 
+plt.show()
+# %%
+# Randomized Search Random Forest
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import StratifiedKFold
+n_estimators = [int(x) for x in np.linspace(100,1000,10)]
+max_features = [ 'sqrt']
+max_depth = [int(x) for x in np.linspace(10,100,10)]
+min_samples_split = [2, 4, 5]
+random_grid = {'n_estimators': n_estimators,
+               'max_features': max_features,
+               'max_depth': max_depth,
+               'min_samples_split': min_samples_split}
+rf_random = RandomizedSearchCV(estimator = RandomForestClassifier(random_state=42), param_distributions = random_grid, n_iter = 40, cv = StratifiedKFold(
+        n_splits=4,
+        shuffle=True,
+        random_state=42
+    ), scoring = 'accuracy',random_state=42)
+rf_random.fit(X_train,y_train)
+print("Melhores Parametros Random Forest:")
+print(rf_random.best_params_)
+# %%
+# Random Forest com menores parametros
+rfc_random = RandomForestClassifier(n_estimators = 100, min_samples_split=2,max_features='sqrt',max_depth=40,random_state=42)
+rfc_random.fit(X_train,y_train)
+y_pred_random = rfc_random.predict(X_test)
+print(classification_report(y_test,y_pred_random))
+# %%
+# Confusion Matrix Random Forest Melhores Parametros
+cm = confusion_matrix(y_test, y_pred_random)
+plt.figure()
+sns.heatmap(cm, cmap = "Greens", annot=True, 
+            cbar_kws = {"orientation":"vertical","label":"color bar"},
+            xticklabels = [0,1], yticklabels = [0,1]);
+plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: Random Forest Best Params") 
+plt.show()
+# %%
