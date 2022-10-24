@@ -136,3 +136,25 @@ y_rfr_random = rfr_random.predict(X_test)
 print("MSE Random Forest Best Params: ")
 print(mean_squared_error(y_test, y_rfr_random))
 # %%
+# KNN
+from sklearn.neighbors import KNeighborsRegressor
+knn = KNeighborsRegressor()
+knn.fit(X_train_scaled,y_train)
+y_pred_knn = knn.predict(X_test_scaled)
+print("MSE KNN: ")
+print(mean_squared_error(y_test, y_pred_knn))
+# %%
+# Grid Search KNN
+param_grid = {'n_neighbors': range(1,31)}
+grid = GridSearchCV(KNeighborsRegressor(), param_grid, cv = 6)
+grid.fit(X_train_scaled,y_train)
+print("KNN Best Params ")
+print(grid.best_params_)
+# %%
+# KNN Melhores Parametros
+knn_best = KNeighborsRegressor(n_neighbors = 18)
+knn_best.fit(X_train_scaled,y_train)
+y_pred_knn_best = knn_best.predict(X_test_scaled)
+print("KNN Best Params")
+print(mean_squared_error(y_test, y_pred_knn_best))
+# %%
