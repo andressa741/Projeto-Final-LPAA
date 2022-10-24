@@ -1,5 +1,6 @@
 # %%
 # Import as bibliotecas 
+from random import Random
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -103,4 +104,19 @@ sns.heatmap(cm, cmap = "Greens", annot=True,
             xticklabels = [0,1], yticklabels = [0,1]);
 plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: SVM") 
 plt.show()
+# %%
+# Random Forest
+from sklearn.ensemble import RandomForestClassifier
+rf = RandomForestClassifier()
+rf.fit(X_train,y_train)
+feature_importances = pd.Series(rf.feature_importances_, index=X.columns)
+feature_importances.sort_values(inplace=True)
+feature_importances.plot(kind='barh')
+# %% 
+from sklearn.feature_selection import SelectKBest, f_classif
+bestfeatures = SelectKBest(score_func=f_classif, k=11)
+best_features = bestfeatures.fit(X_train,y_train)
+dfscores = pd.Series(best_features.scores_,index=X.columns)
+dfscores.sort_values(inplace=True)
+dfscores.plot(kind='barh')
 # %%
