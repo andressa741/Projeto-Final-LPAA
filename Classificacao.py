@@ -170,3 +170,45 @@ sns.heatmap(cm, cmap = "Greens", annot=True,
 plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: Random Forest Best Params") 
 plt.show()
 # %%
+# KNN
+from sklearn.neighbors import KNeighborsClassifier
+knn_clf = KNeighborsClassifier()
+knn_clf.fit(X_train_scaled_standard, y_train)
+y_pred_knn = knn_clf.predict(X_test_scaled_standard)
+print(classification_report(y_test,y_pred_knn))
+# %%
+# Confusion Matrix KNN 
+cm = confusion_matrix(y_test, y_pred_knn)
+plt.figure()
+sns.heatmap(cm, cmap = "Greens", annot=True, 
+            cbar_kws = {"orientation":"vertical","label":"color bar"},
+            xticklabels = [0,1], yticklabels = [0,1]);
+plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: KNN") 
+plt.show()
+# %%
+# Grid Search KNN
+param_grid = {'n_neighbors': range(1, 31)}
+grid_knn = GridSearchCV(KNeighborsClassifier(), param_grid, cv=StratifiedKFold(
+        n_splits=4,
+        shuffle=True,
+        random_state=42
+    ))
+grid_knn.fit(X_train_scaled_standard, y_train)
+print("KNN Melhores Parametros")
+grid_knn.best_params_
+# %%
+# KNN Melhores Parametros
+knn_grid = KNeighborsClassifier(n_neighbors=8)
+knn_grid.fit(X_train_scaled_standard,y_train)
+y_pred_grid_knn = knn_grid.predict(X_test_scaled_standard)
+print(classification_report(y_test,y_pred_grid_knn))
+# %%
+# KNN Confusion Matrix Melhores parametros
+cm = confusion_matrix(y_test, y_pred_grid_knn)
+plt.figure()
+sns.heatmap(cm, cmap = "Greens", annot=True, 
+            cbar_kws = {"orientation":"vertical","label":"color bar"},
+            xticklabels = [0,1], yticklabels = [0,1]);
+plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: KNN Best Params") 
+plt.show()
+# %%
