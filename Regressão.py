@@ -99,3 +99,11 @@ y_pred_svr_grid = svr_grid.predict(X_test_scaled)
 print("MSE SVR Melhores Parametros: ")
 print(mean_squared_error(y_test, y_pred_svr_grid))
 # %%
+# Linear Regression
+from sklearn.linear_model import LinearRegression
+linear = LinearRegression()
+linear.fit(X_train_scaled,y_train)
+y_pred_linear = linear.predict(X_test_scaled)
+print("MSE Linear Regression: ")
+print(mean_squared_error(y_test, y_pred_linear))
+# %%
