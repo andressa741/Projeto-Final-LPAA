@@ -73,3 +73,29 @@ pipeline.fit(X_train)
 X_train_scaled = pd.concat([pd.DataFrame(pipeline.transform(X_train),index = X_train.index,columns=["age", "bmi","bp","s1","s2","s3","s4","s5","s6"]),X_train[["sex_1","sex_2"]]],axis = 1)
 X_test_scaled = pd.concat([pd.DataFrame(pipeline.transform(X_test),index = X_test.index,columns=["age", "bmi","bp","s1","s2","s3","s4","s5","s6"]),X_test[["sex_1","sex_2"]]],axis = 1)
 # %%
+# SVR
+from sklearn.svm import SVR
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.model_selection import GridSearchCV
+svr = SVR()
+svr.fit(X_train_scaled, y_train)
+y_pred_svr = svr.predict(X_test_scaled)
+print("SVR MSE: ")
+print(mean_squared_error(y_test, y_pred_svr))
+# %%
+# Grid Search SVR
+param_grid = {'C': [0.1, 1, 10, 100], 
+              'gamma': [0.1, 0.01, 0.001,0.0001],
+              'kernel': ['rbf']}
+grid = GridSearchCV(SVR(), param_grid, cv = 6)
+grid.fit(X_train_scaled, y_train)
+print("Melhores parametros SVR:")
+print(grid.best_params_)
+# %%
+# SVR Melhores parametros
+svr_grid = SVR(C = 100, gamma = 0.01, kernel = 'rbf')
+svr_grid.fit(X_train_scaled, y_train)
+y_pred_svr_grid = svr_grid.predict(X_test_scaled)
+print("MSE SVR Melhores Parametros: ")
+print(mean_squared_error(y_test, y_pred_svr_grid))
+# %%
