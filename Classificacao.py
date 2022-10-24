@@ -160,7 +160,7 @@ rf_random.fit(X_train,y_train)
 print("Melhores Parametros Random Forest:")
 print(rf_random.best_params_)
 # %%
-# Random Forest com menores parametros
+# Random Forest com melhores parametros
 rfc_random = RandomForestClassifier(n_estimators = 100, min_samples_split=2,max_features='sqrt',max_depth=40,random_state=42)
 rfc_random.fit(X_train,y_train)
 y_pred_random = rfc_random.predict(X_test)
@@ -217,4 +217,11 @@ sns.heatmap(cm, cmap = "Greens", annot=True,
 plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: KNN Best Params") 
 plt.show()
 # %%
+from joblib import dump
+dump(clf_svm,"svm.pkl")
+dump(rfc_random,"rfc.pkl")
+dump(knn_grid,"knn.pkl")
 
+
+
+# %%
