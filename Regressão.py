@@ -107,3 +107,32 @@ y_pred_linear = linear.predict(X_test_scaled)
 print("MSE Linear Regression: ")
 print(mean_squared_error(y_test, y_pred_linear))
 # %%
+# Random Forest
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import RandomizedSearchCV
+rfr = RandomForestRegressor()
+rfr.fit(X_train,y_train)
+y_pred_rfr = rfr.predict(X_test)
+print("MSE Random Forest: ")
+print(mean_squared_error(y_test, y_pred_rfr))
+# %%
+# Randomized Search Random Forest
+n_estimators = [int(x) for x in np.linspace(100,1000,10)]
+max_features = [ 'sqrt']
+max_depth = [int(x) for x in np.linspace(10,100,10)]
+min_samples_split = [2, 4, 5]
+random_grid = {'n_estimators': n_estimators,
+               'max_features': max_features,
+               'max_depth': max_depth,
+               'min_samples_split': min_samples_split}
+rfr_random = RandomizedSearchCV(estimator = RandomForestRegressor(), param_distributions = random_grid, n_iter = 40, cv = 6,random_state=42)
+rfr_random.fit(X_train,y_train)
+print("Random Forest Melhores Parametros: ")
+print(rfr_random.best_params_)
+# %%
+rfr_random = RandomForestRegressor(n_estimators = 400, min_samples_split=5,max_features='sqrt',max_depth=80,random_state=42)
+rfr_random.fit(X_train,y_train)
+y_rfr_random = rfr_random.predict(X_test)
+print("MSE Random Forest Best Params: ")
+print(mean_squared_error(y_test, y_rfr_random))
+# %%
