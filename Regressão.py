@@ -160,3 +160,10 @@ y_pred_knn_best = knn_best.predict(X_test_scaled)
 print("KNN Best Params")
 print(mean_squared_error(y_test, y_pred_knn_best))
 # %%
+from joblib import dump
+dump(svr_grid,"svr.pkl")
+dump(linear,"lr.pkl")
+dump(rfr_random,"rfr.pkl")
+dump(knn_best,"knnr.pkl")
+
+# %%
