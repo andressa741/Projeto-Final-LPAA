@@ -127,12 +127,12 @@ random_grid = {'n_estimators': n_estimators,
                'max_features': max_features,
                'max_depth': max_depth,
                'min_samples_split': min_samples_split}
-rfr_random = RandomizedSearchCV(estimator = RandomForestRegressor(), param_distributions = random_grid, n_iter = 40, cv = 6,random_state=42)
+rfr_random = RandomizedSearchCV(estimator = RandomForestRegressor(random_state=42), param_distributions = random_grid, cv = 6,random_state=42)
 rfr_random.fit(X_train,y_train)
 print("Random Forest Melhores Parametros: ")
 print(rfr_random.best_params_)
 # %%
-rfr_random = RandomForestRegressor(n_estimators = 400, min_samples_split=5,max_features='sqrt',max_depth=80,random_state=42)
+rfr_random = RandomForestRegressor(n_estimators = 700, min_samples_split=5,max_features='sqrt',max_depth=90,random_state=42)
 rfr_random.fit(X_train,y_train)
 y_rfr_random = rfr_random.predict(X_test)
 print("MSE Random Forest Best Params: ")
