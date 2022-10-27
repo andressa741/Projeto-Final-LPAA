@@ -1,5 +1,6 @@
 # %%
 # Import as bibliotecas 
+from statistics import mean
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -167,3 +168,68 @@ dump(rfr_random,open("rfr.pkl", 'wb'))
 dump(knn_best,open("knnr.pkl", 'wb'))
 
 # %%
+# Feature Selection
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import f_regression
+fs = SelectKBest(score_func=f_regression, k='all')
+fs.fit(X_train, y_train)
+X_train_fs = fs.transform(X_train)
+X_test_fs = fs.transform(X_test)
+# Plot dos scores das features
+plt.bar([i for i in range(len(fs.scores_))], fs.scores_)
+plt.show()
+# Conclusão: feature age,s1 e s2 são as menos importantes
+
+pipeline2=ColumnTransformer([
+    ('standard_scaler',StandardScaler(),["bmi","bp","s3","s4","s5","s6"]),
+])
+X_train_removido = X_train.drop(["age","s1","s2"],axis=1)
+X_test_removido = X_test.drop(["age","s1","s2"],axis=1)
+pipeline2.fit(X_train_removido)
+
+X_train_removido_scaled = pd.concat([pd.DataFrame(pipeline2.transform(X_train_removido),index = X_train_removido.index,columns=[ "bmi","bp","s3","s4","s5","s6"]),X_train_removido[["sex_1","sex_2"]]],axis = 1)
+X_test_removido_scaled = pd.concat([pd.DataFrame(pipeline2.transform(X_test_removido),index = X_test_removido.index,columns=[ "bmi","bp","s3","s4","s5","s6"]),X_test_removido[["sex_1","sex_2"]]],axis = 1)
+# Treinando algoritmos com X_train_removido_scaled
+# SVR
+from sklearn.model_selection import GridSearchCV
+param_grid = {'C': [0.1, 1, 10, 100], 
+              'gamma': [0.1, 0.01, 0.001,0.0001],
+              'kernel': ['rbf']}
+grid_removido_svr = GridSearchCV(SVR(), param_grid, cv = 6)
+grid_removido_svr.fit(X_train_removido_scaled, y_train)
+print("Melhores parametros do SVR com feature selection:")
+print(grid_removido_svr.best_params_)
+svr_removido = SVR(C=100,gamma=0.01,kernel='rbf')
+svr_removido.fit(X_train_removido_scaled,y_train)
+y_pred_svr_removido = svr_removido.predict(X_test_removido_scaled)
+print("MSE SVR com feature selection:")
+print(mean_squared_error(y_test,y_pred_svr_removido))
+# KNN
+param_grid = {'n_neighbors': range(1,31)}
+grid_knn_removido = GridSearchCV(KNeighborsRegressor(), param_grid, cv = 6)
+grid_knn_removido.fit(X_train_removido_scaled, y_train)
+print("Melhores parametros KNN com feature selection:")
+print(grid_knn_removido.best_params_)
+knn_removido = KNeighborsRegressor(n_neighbors = 26)
+knn_removido.fit(X_train_removido_scaled,y_train)
+y_pred_knn_removido = knn_removido.predict(X_test_removido_scaled)
+print("MSE KNN com feature selection:")
+print(mean_squared_error(y_test,y_pred_knn_removido))
+# Random Forest
+n_estimators = [int(x) for x in np.linspace(100,1000,10)]
+max_features = [ 'sqrt']
+max_depth = [int(x) for x in np.linspace(10,100,10)]
+min_samples_split = [2, 4, 5]
+random_grid = {'n_estimators': n_estimators,
+               'max_features': max_features,
+               'max_depth': max_depth,
+               'min_samples_split': min_samples_split}
+rfr_random_removido = RandomizedSearchCV(estimator = RandomForestRegressor(random_state=42), param_distributions = random_grid, n_iter = 40, cv = 6,random_state=42)
+rfr_random_removido.fit(X_train_removido,y_train)
+print("Melhores parametros Random Forest com Feature Selection:")
+print(rfr_random_removido.best_params_)
+rfr_removido = RandomForestRegressor(n_estimators = 900, min_samples_split=5,max_features='sqrt',max_depth=50)
+rfr_removido.fit(X_train_removido,y_train)
+y_pred_rfr_removido = rfr_removido.predict(X_test_removido)
+print("MSE Random Forest com feature selection")
+print(mean_squared_error(y_test, y_pred_rfr_removido))
