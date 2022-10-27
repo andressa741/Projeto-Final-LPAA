@@ -93,42 +93,35 @@ grid = GridSearchCV(SVC(), param_grid, cv = StratifiedKFold(
         random_state=42
     ))
 grid.fit(X_train_scaled_standard, y_train)
+print("Melhores parametros SVM")
 print(grid.best_params_)
 # %%
 clf_svm = SVC(C = 10, gamma = 0.001, kernel = 'rbf',probability=True)
 clf_svm.fit(X_train_scaled_standard, y_train)
 y_pred = clf_svm.predict(X_test_scaled_standard)
+print("SVM Classification report Melhores Parametros")
 print(classification_report(y_test,y_pred))
 # %%
 # Confusion matrix 
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
 plt.figure()
-sns.heatmap(cm, cmap = "Greens", annot=True, 
+sns.heatmap(cm, cmap = "Blues", annot=True, 
             cbar_kws = {"orientation":"vertical","label":"color bar"},
             xticklabels = [0,1], yticklabels = [0,1]);
-plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: SVM") 
+plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix Best Params: SVM") 
 plt.show()
+# %%
+
+# %% 
+
 # %%
 # Random Forest
 from sklearn.ensemble import RandomForestClassifier
-rf = RandomForestClassifier()
-rf.fit(X_train,y_train)
-feature_importances = pd.Series(rf.feature_importances_, index=X.columns)
-feature_importances.sort_values(inplace=True)
-feature_importances.plot(kind='barh')
-# %% 
-from sklearn.feature_selection import SelectKBest, f_classif
-bestfeatures = SelectKBest(score_func=f_classif, k=11)
-best_features = bestfeatures.fit(X_train,y_train)
-dfscores = pd.Series(best_features.scores_,index=X.columns)
-dfscores.sort_values(inplace=True)
-dfscores.plot(kind='barh')
-# %%
-# Random Forest
 rfc = RandomForestClassifier(n_estimators=50,random_state=42)
 rfc.fit(X_train,y_train)
 y_pred_base_model = rfc.predict(X_test)
+print("Classification report Random Forest")
 print(classification_report(y_test,y_pred_base_model))
 print(rfc.get_params())
 # Confusion Matrix
@@ -164,6 +157,7 @@ print(rf_random.best_params_)
 rfc_random = RandomForestClassifier(n_estimators = 100, min_samples_split=2,max_features='sqrt',max_depth=40,random_state=42)
 rfc_random.fit(X_train,y_train)
 y_pred_random = rfc_random.predict(X_test)
+print("Classification report Random Forest")
 print(classification_report(y_test,y_pred_random))
 # %%
 # Confusion Matrix Random Forest Melhores Parametros
@@ -172,7 +166,7 @@ plt.figure()
 sns.heatmap(cm, cmap = "Greens", annot=True, 
             cbar_kws = {"orientation":"vertical","label":"color bar"},
             xticklabels = [0,1], yticklabels = [0,1]);
-plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: Random Forest Best Params") 
+plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix Best Params: Random Forest ") 
 plt.show()
 # %%
 # KNN
@@ -211,10 +205,10 @@ print(classification_report(y_test,y_pred_grid_knn))
 # KNN Confusion Matrix Melhores parametros
 cm = confusion_matrix(y_test, y_pred_grid_knn)
 plt.figure()
-sns.heatmap(cm, cmap = "Greens", annot=True, 
+sns.heatmap(cm, cmap = "Reds", annot=True, 
             cbar_kws = {"orientation":"vertical","label":"color bar"},
             xticklabels = [0,1], yticklabels = [0,1]);
-plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: KNN Best Params") 
+plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix Best Params: KNN ") 
 plt.show()
 # %%
 from pickle import dump
@@ -286,11 +280,12 @@ clf_svm_fs.fit(X_train_scaled_standard_fs, y_train)
 y_pred_svm_fs = clf_svm_fs.predict(X_test_scaled_standard_fs)
 cm = confusion_matrix(y_test, y_pred_svm_fs)
 plt.figure()
-sns.heatmap(cm, cmap = "Reds", annot=True, 
+sns.heatmap(cm, cmap = "Blues", annot=True, 
             cbar_kws = {"orientation":"vertical","label":"color bar"},
             xticklabels = [0,1], yticklabels = [0,1]);
-plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: SVM Feature Selection") 
+plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: SVM Random Forest Feature Selection") 
 plt.show()
+print("Classification Report SVM Random Forest Feature Selection")
 print(classification_report(y_test,y_pred_svm_fs))
 # KNN Feature Selection
 param_grid_knn = {'n_neighbors': range(1, 31)}
@@ -300,17 +295,19 @@ grid_knn_fs = GridSearchCV(KNeighborsClassifier(), param_grid_knn, cv=Stratified
         random_state=42
     ))
 grid_knn_fs.fit(X_train_scaled_standard_fs, y_train)
-grid_knn_fs.best_params_
+print("KNN Random Forest Feature Selection Best Params")
+print(grid_knn_fs.best_params_)
 knn_grid_fs = KNeighborsClassifier(n_neighbors=7)
 knn_grid_fs.fit(X_train_scaled_standard_fs,y_train)
 y_pred_grid_knn_fs = knn_grid_fs.predict(X_test_scaled_standard_fs)
+print("Classification report KNN Random Forest Feature Selection")
 print(classification_report(y_test,y_pred_grid_knn_fs))
 cm = confusion_matrix(y_test, y_pred_grid_knn_fs)
 plt.figure()
 sns.heatmap(cm, cmap = "Reds", annot=True, 
             cbar_kws = {"orientation":"vertical","label":"color bar"},
             xticklabels = [0,1], yticklabels = [0,1]);
-plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: KNN Feature") 
+plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: KNN Random Forest Feature Selection") 
 plt.show()
 # Random Forest Feature Selection
 from sklearn.model_selection import RandomizedSearchCV
@@ -328,10 +325,11 @@ print(rfr_random_removido.best_params_)
 rf_fs = RandomForestClassifier(n_estimators=100,min_samples_split=4,max_features='sqrt',max_depth=90,random_state=42)
 rf_fs.fit(X_train_rf_fs,y_train)
 y_pred_rf_fs = rf_fs.predict(X_test_rf_fs)
+print("Classification report Random Forest Feature Selection")
 print(classification_report(y_test,y_pred_rf_fs))
 cm = confusion_matrix(y_test, y_pred_rf_fs)
 plt.figure()
-sns.heatmap(cm, cmap = "Reds", annot=True, 
+sns.heatmap(cm, cmap = "Greens", annot=True, 
             cbar_kws = {"orientation":"vertical","label":"color bar"},
             xticklabels = [0,1], yticklabels = [0,1]);
 plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: Random Forest Feature Selection") 
@@ -367,9 +365,9 @@ plt.figure()
 sns.heatmap(cm, cmap = "Reds", annot=True, 
             cbar_kws = {"orientation":"vertical","label":"color bar"},
             xticklabels = [0,1], yticklabels = [0,1]);
-plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: KNN Feature Selection") 
+plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: KNN Feature Selection SelectKBest") 
 plt.show()
-print("Classification report KNN Feature Selection")
+print("Classification report KNN SelectKBest")
 print(classification_report(y_test,y_pred_grid_knn_sb_fs))
 # SVM Feature Selection
 grid = GridSearchCV(SVC(), param_grid, cv = StratifiedKFold(
@@ -383,11 +381,11 @@ print(grid.best_params_)
 clf_svm_sb_fs = SVC(C = 10, gamma = 0.01, kernel = 'rbf')
 clf_svm_fs.fit(X_train_sb_fs_scaled, y_train)
 y_pred_svm_sb_fs = clf_svm_fs.predict(X_test_sb_fs_scaled)
-print("Classification report SVM Feature Selection")
+print("Classification report SVM SelectKBest")
 print(classification_report(y_test,y_pred_svm_sb_fs))
 cm = confusion_matrix(y_test, y_pred_svm_sb_fs)
 plt.figure()
-sns.heatmap(cm, cmap = "Reds", annot=True, 
+sns.heatmap(cm, cmap = "Blues", annot=True, 
             cbar_kws = {"orientation":"vertical","label":"color bar"},
             xticklabels = [0,1], yticklabels = [0,1]);
 plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: SVM Feature Selection") 
@@ -410,8 +408,8 @@ y_pred_rf_fs = rf_fs.predict(X_test_sb_fs)
 print(classification_report(y_test,y_pred_rf_fs))
 cm = confusion_matrix(y_test, y_pred_rf_fs)
 plt.figure()
-sns.heatmap(cm, cmap = "Reds", annot=True, 
+sns.heatmap(cm, cmap = "Greens", annot=True, 
             cbar_kws = {"orientation":"vertical","label":"color bar"},
             xticklabels = [0,1], yticklabels = [0,1]);
-plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: Random Forest Feature Selection") 
+plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: Random Forest SelectKBest") 
 plt.show()
