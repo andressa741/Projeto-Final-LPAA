@@ -95,7 +95,7 @@ grid = GridSearchCV(SVC(), param_grid, cv = StratifiedKFold(
 grid.fit(X_train_scaled_standard, y_train)
 print(grid.best_params_)
 # %%
-clf_svm = SVC(C = 10, gamma = 0.001, kernel = 'rbf')
+clf_svm = SVC(C = 10, gamma = 0.001, kernel = 'rbf',probability=True)
 clf_svm.fit(X_train_scaled_standard, y_train)
 y_pred = clf_svm.predict(X_test_scaled_standard)
 print(classification_report(y_test,y_pred))
@@ -200,7 +200,7 @@ grid_knn = GridSearchCV(KNeighborsClassifier(), param_grid, cv=StratifiedKFold(
     ))
 grid_knn.fit(X_train_scaled_standard, y_train)
 print("KNN Melhores Parametros")
-grid_knn.best_params_
+print(grid_knn.best_params_)
 # %%
 # KNN Melhores Parametros
 knn_grid = KNeighborsClassifier(n_neighbors=8)
@@ -225,3 +225,23 @@ dump(knn_grid,open("knn.pkl", 'wb'))
 
 
 # %%
+# Plot Curva ROC
+pred_prob_svm = clf_svm.predict_proba(X_test_scaled_standard)
+pred_prob_rfc = rfc_random.predict_proba(X_test)
+pred_prob_knn = knn_grid.predict_proba(X_test_scaled_standard)
+from sklearn.metrics import roc_curve
+fpr_svm, tpr_svm, thresh_svm = roc_curve(y_test, pred_prob_svm[:,1])
+fpr_rfc, tpr_rfc, thresh_rfc = roc_curve(y_test, pred_prob_rfc[:,1])
+fpr_knn, tpr_knn, thresh_knn = roc_curve(y_test, pred_prob_knn[:,1])
+plt.plot(fpr_svm, tpr_svm, linestyle='--',color='orange', label='SVM')
+plt.plot(fpr_rfc, tpr_rfc, linestyle='--',color='blue', label='Random Forest')
+plt.plot(fpr_knn, tpr_knn, linestyle='--', color='green',label='KNN')
+
+plt.title('ROC curve')
+
+plt.xlabel('False Positive Rate')
+
+plt.ylabel('True Positive rate')
+
+plt.legend(loc='best')
+plt.show()
