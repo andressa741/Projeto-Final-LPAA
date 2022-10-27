@@ -1,10 +1,10 @@
 # %%
 # Import as bibliotecas 
-from statistics import mean
+
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
-from pyparsing import col
+
 import seaborn as sns
 # %%
 # Import do dataset
