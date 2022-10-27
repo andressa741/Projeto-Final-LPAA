@@ -245,3 +245,14 @@ plt.ylabel('True Positive rate')
 
 plt.legend(loc='best')
 plt.show()
+# AUC Score
+from sklearn.metrics import roc_auc_score
+auc_score_svm = roc_auc_score(y_test, pred_prob_svm[:,1])
+auc_score_rfc = roc_auc_score(y_test, pred_prob_rfc[:,1])
+auc_score_knn = roc_auc_score(y_test, pred_prob_knn[:,1])
+print("AUC SVM: ")
+print(auc_score_svm)
+print("AUC Random Forest: ")
+print(auc_score_rfc)
+print("AUC KNN: ")
+print(auc_score_knn)
