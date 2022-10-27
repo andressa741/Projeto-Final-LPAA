@@ -233,3 +233,61 @@ rfr_removido.fit(X_train_removido,y_train)
 y_pred_rfr_removido = rfr_removido.predict(X_test_removido)
 print("MSE Random Forest com feature selection")
 print(mean_squared_error(y_test, y_pred_rfr_removido))
+# PCA
+from sklearn.decomposition import PCA
+pca = PCA()
+X_train_pca = pca.fit_transform(X_train_scaled)
+# Scree Plot
+values_pca = np.arange(pca.n_components_)+1
+plt.plot(values_pca, pca.explained_variance_ratio_, 'o-', linewidth=2, color='black')
+plt.title('Scree Plot')
+plt.xlabel('Principal Component')
+plt.ylabel('Variance Explained')
+plt.show()
+train_pc1_coord = X_train_pca[:,0]
+param_grid = {'C': [0.1, 1, 10, 100], 
+              'gamma': [0.1, 0.01, 0.001,0.0001],
+              'kernel': ['rbf']}
+grid = GridSearchCV(SVR(), param_grid, cv = 6)
+grid.fit(train_pc1_coord.reshape(-1,1),y_train)
+print("PCA SVR melhores parametros")
+print(grid.best_params_)
+svr_pca = SVR(C=10,gamma=0.1,kernel='rbf')
+svr_pca.fit(train_pc1_coord.reshape(-1,1),y_train)
+X_eixo = np.arange(train_pc1_coord.min()-1,train_pc1_coord.max()+1,step=0.1)
+y_eixo = svr_pca.predict(X_eixo.reshape(-1,1))
+plt.figure()
+plt.plot(X_eixo,y_eixo,'k')
+plt.scatter(train_pc1_coord,y_train)
+# KNN PCA
+param_grid = {'n_neighbors': range(1,31)}
+grid = GridSearchCV(KNeighborsRegressor(), param_grid, cv = 6)
+grid.fit(train_pc1_coord.reshape(-1,1),y_train)
+print("Melhores Parametros KNN PCA")
+print(grid.best_params_)
+knn_pca = KNeighborsRegressor(n_neighbors = 24)
+knn_pca.fit(train_pc1_coord.reshape(-1,1),y_train)
+y_eixo = knn_pca.predict(X_eixo.reshape(-1,1))
+plt.figure()
+plt.plot(X_eixo,y_eixo,'k')
+plt.scatter(train_pc1_coord,y_train)
+
+# Random Forest
+n_estimators = [int(x) for x in np.linspace(100,1000,10)]
+max_features = [ 'sqrt']
+max_depth = [int(x) for x in np.linspace(10,100,10)]
+min_samples_split = [2, 4, 5]
+random_grid = {'n_estimators': n_estimators,
+               'max_features': max_features,
+               'max_depth': max_depth,
+               'min_samples_split': min_samples_split}
+rfr_random = RandomizedSearchCV(estimator = RandomForestRegressor(random_state=42), param_distributions = random_grid, n_iter = 40, cv = 6,random_state=42)
+rfr_random.fit(train_pc1_coord.reshape(-1,1),y_train)
+print("Melhores parametros Random Forest PCA")
+print(rfr_random.best_params_)
+rfr_pca = RandomForestRegressor(n_estimators=500,min_samples_split=5,max_features='sqrt',max_depth=10)
+rfr_pca.fit(train_pc1_coord.reshape(-1,1),y_train)
+y_eixo = rfr_pca.predict(X_eixo.reshape(-1,1))
+plt.figure()
+plt.plot(X_eixo,y_eixo,'k')
+plt.scatter(train_pc1_coord,y_train)
