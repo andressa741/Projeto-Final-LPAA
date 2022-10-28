@@ -74,7 +74,7 @@ X_removed_test_scaled_standard = scaling_removed_standard.transform(X_removed_te
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import classification_report
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, StratifiedKFold
 
 # %%
 clf_svm = SVC()
@@ -157,7 +157,7 @@ print(rf_random.best_params_)
 rfc_random = RandomForestClassifier(n_estimators = 100, min_samples_split=2,max_features='sqrt',max_depth=40,random_state=42)
 rfc_random.fit(X_train,y_train)
 y_pred_random = rfc_random.predict(X_test)
-print("Classification report Random Forest")
+print("Classification report Random Forest Best Params")
 print(classification_report(y_test,y_pred_random))
 # %%
 # Confusion Matrix Random Forest Melhores Parametros
@@ -179,7 +179,7 @@ print(classification_report(y_test,y_pred_knn))
 # Confusion Matrix KNN 
 cm = confusion_matrix(y_test, y_pred_knn)
 plt.figure()
-sns.heatmap(cm, cmap = "Greens", annot=True, 
+sns.heatmap(cm, cmap = "Reds", annot=True, 
             cbar_kws = {"orientation":"vertical","label":"color bar"},
             xticklabels = [0,1], yticklabels = [0,1]);
 plt.xlabel('Predicted labels');plt.ylabel('True labels');plt.title("Confusion Matrix: KNN") 
@@ -200,6 +200,7 @@ print(grid_knn.best_params_)
 knn_grid = KNeighborsClassifier(n_neighbors=8)
 knn_grid.fit(X_train_scaled_standard,y_train)
 y_pred_grid_knn = knn_grid.predict(X_test_scaled_standard)
+print("Classification Report KNN Best Params")
 print(classification_report(y_test,y_pred_grid_knn))
 # %%
 # KNN Confusion Matrix Melhores parametros
