@@ -101,6 +101,14 @@ svr_grid.fit(X_train_scaled, y_train)
 y_pred_svr_grid = svr_grid.predict(X_test_scaled)
 print("MSE SVR Melhores Parametros: ")
 print(mean_squared_error(y_test, y_pred_svr_grid))
+# Plotando Gráfico
+fig, ax = plt.subplots()
+ax.scatter(y_pred_svr_grid, y_test)
+ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--')
+ax.set_xlabel('Predicted')
+ax.set_ylabel('Actual')
+plt.title("SVR Best Params")
+plt.show()
 # %%
 # Linear Regression
 from sklearn.linear_model import LinearRegression
@@ -109,6 +117,13 @@ linear.fit(X_train_scaled,y_train)
 y_pred_linear = linear.predict(X_test_scaled)
 print("MSE Linear Regression: ")
 print(mean_squared_error(y_test, y_pred_linear))
+fig, ax = plt.subplots()
+ax.scatter(y_pred_linear, y_test)
+ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--')
+ax.set_xlabel('Predicted')
+ax.set_ylabel('Actual')
+plt.title("Linear")
+plt.show()
 # %%
 # Random Forest
 from sklearn.ensemble import RandomForestRegressor
@@ -138,6 +153,14 @@ rfr_random.fit(X_train,y_train)
 y_rfr_random = rfr_random.predict(X_test)
 print("MSE Random Forest Best Params: ")
 print(mean_squared_error(y_test, y_rfr_random))
+# Plot do gráfico
+fig, ax = plt.subplots()
+ax.scatter(y_rfr_random, y_test)
+ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--')
+ax.set_xlabel('Predicted')
+ax.set_ylabel('Actual')
+plt.title("Random Forest Best Params")
+plt.show()
 # %%
 # KNN
 from sklearn.neighbors import KNeighborsRegressor
@@ -160,6 +183,14 @@ knn_best.fit(X_train_scaled,y_train)
 y_pred_knn_best = knn_best.predict(X_test_scaled)
 print("KNN Best Params")
 print(mean_squared_error(y_test, y_pred_knn_best))
+# Plot do gráfico
+fig, ax = plt.subplots()
+ax.scatter(y_pred_knn_best, y_test)
+ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--')
+ax.set_xlabel('Predicted')
+ax.set_ylabel('Actual')
+plt.title("KNN Best Params")
+plt.show()
 # %%
 from pickle import dump
 dump(svr_grid,open("svr.pkl", 'wb'))
@@ -204,6 +235,14 @@ svr_removido.fit(X_train_removido_scaled,y_train)
 y_pred_svr_removido = svr_removido.predict(X_test_removido_scaled)
 print("MSE SVR com feature selection:")
 print(mean_squared_error(y_test,y_pred_svr_removido))
+# SVR plot grafico
+fig, ax = plt.subplots()
+ax.scatter(y_pred_svr_removido, y_test)
+ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--')
+ax.set_xlabel('Predicted')
+ax.set_ylabel('Actual')
+plt.title("SVR Feature Selection")
+plt.show()
 # KNN
 param_grid = {'n_neighbors': range(1,31)}
 grid_knn_removido = GridSearchCV(KNeighborsRegressor(), param_grid, cv = 6)
@@ -215,6 +254,14 @@ knn_removido.fit(X_train_removido_scaled,y_train)
 y_pred_knn_removido = knn_removido.predict(X_test_removido_scaled)
 print("MSE KNN com feature selection:")
 print(mean_squared_error(y_test,y_pred_knn_removido))
+# KNN plot grafico
+fig, ax = plt.subplots()
+ax.scatter(y_pred_knn_removido, y_test)
+ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--')
+ax.set_xlabel('Predicted')
+ax.set_ylabel('Actual')
+plt.title("KNN Feature Selection")
+plt.show()
 # Random Forest
 n_estimators = [int(x) for x in np.linspace(100,1000,10)]
 max_features = [ 'sqrt']
@@ -233,6 +280,14 @@ rfr_removido.fit(X_train_removido,y_train)
 y_pred_rfr_removido = rfr_removido.predict(X_test_removido)
 print("MSE Random Forest com feature selection")
 print(mean_squared_error(y_test, y_pred_rfr_removido))
+# Random Forest plot grafico
+fig, ax = plt.subplots()
+ax.scatter(y_pred_rfr_removido, y_test)
+ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--')
+ax.set_xlabel('Predicted')
+ax.set_ylabel('Actual')
+plt.title("Random Forest Feature Selection")
+plt.show()
 # PCA
 from sklearn.decomposition import PCA
 pca = PCA()
